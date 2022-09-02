@@ -1,0 +1,11 @@
+{
+  "name": "review_server_api",
+  "version": "1.0.0",
+  "description": "Movie review app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "37flwr",
+  "license": "ISC"
+}
