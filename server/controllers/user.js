@@ -2,6 +2,7 @@ const User = require("../models/user");
 const EmailVerificationToken = require("../models/emailVerificationToken");
 const nodemailer = require("nodemailer");
 const { isValidObjectId } = require("mongoose");
+const user = require("../models/user");
 
 exports.create = async (req, res) => {
   const { name, email, password } = req.body;
@@ -19,7 +20,6 @@ exports.create = async (req, res) => {
     const randomVal = Math.round(Math.random() * 9);
     OTP += randomVal;
   }
-  console.log(OTP);
 
   // Store OTP inside DB
   const newEmailVerificationToken = new EmailVerificationToken({
@@ -108,4 +108,58 @@ exports.verifyEmail = async (req, res) => {
   });
 
   res.status(200).json({ message: "Your email has been verified" });
+};
+
+exports.resendEmailVerificationToken = async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) return res.status(401).json({ error: "User not found" });
+
+  if (user.isVerified)
+    return res.status(400).json({ error: "This email is already verified" });
+
+  const alreadyHasToken = await EmailVerificationToken.findOne({
+    owner: userId,
+  });
+  if (alreadyHasToken)
+    return res.status(400).json({ error: "Your OTP is still valid" });
+
+  // Generate 6 digits OTP
+  let OTP = "";
+  for (let i = 0; i <= 5; i++) {
+    const randomVal = Math.round(Math.random() * 9);
+    OTP += randomVal;
+  }
+
+  // Store OTP inside DB
+  const newEmailVerificationToken = new EmailVerificationToken({
+    owner: user._id,
+    token: OTP,
+  });
+  await newEmailVerificationToken.save();
+
+  // Send OTP to user
+  var transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "6831398ae0f3ce",
+      pass: "3b3dbfd3b979e9",
+    },
+  });
+
+  transport.sendMail({
+    from: "verification@reviewapp.com",
+    to: user.email,
+    subject: "Email verification",
+    html: `
+      <p>Your verification OTP</p>
+      <h1>${OTP}</h1>
+    `,
+  });
+
+  res.status(201).json({
+    message: "New verification token has been sent to your email address",
+  });
 };
