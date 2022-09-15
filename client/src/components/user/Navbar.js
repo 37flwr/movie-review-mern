@@ -1,16 +1,25 @@
 import React from "react";
 import { BsFillSunFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { useTheme } from "../../hooks";
 import Container from "../Container";
 
 const Navbar = () => {
+  const { toggleTheme } = useTheme();
+
   return (
     <div className="bg-secondary shadow-sm shadow-gray-500">
       <Container className="p-2 flex justify-between">
-        <img src="./logo.png" alt="" className="h-10" />
+        <Link to="/">
+          <img src="./logo.png" alt="" className="h-10" />
+        </Link>
         <ul className="flex items-center space-x-4">
           <li>
-            <button className="bg-dark-subtle p-1 rounded">
-              <BsFillSunFill className="text-white" size={24} />
+            <button
+              onClick={toggleTheme}
+              className="dark:bg-white bg-dark-subtle p-1 rounded"
+            >
+              <BsFillSunFill className="text-secondary" size={24} />
             </button>
           </li>
           <li>
@@ -19,7 +28,14 @@ const Navbar = () => {
               placeholder="Search..."
             />
           </li>
-          <li className="text-white font-semibold text-lg">Login</li>
+          <li>
+            <Link
+              to="/auth/signin"
+              className="text-white font-semibold text-lg"
+            >
+              Login
+            </Link>
+          </li>
         </ul>
       </Container>
     </div>

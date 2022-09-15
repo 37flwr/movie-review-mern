@@ -8,20 +8,17 @@ import FormInput from "../form/FormInput";
 import FormTitle from "../form/FormTitle";
 import SubmitButton from "../form/SubmitButton";
 
-const SignInForm = () => {
+const ForgetPassword = () => {
   return (
     <FormContainer>
       <Container>
-        <form className={classNames(commonModalClasses, "w-72")}>
-          <FormTitle>Sign in</FormTitle>
+        <form className={classNames(commonModalClasses, "w-96")}>
+          <FormTitle>Please enter your email</FormTitle>
           <FormInput name="email" placeholder="john@email.com" label="Email" />
-          <FormInput name="password" placeholder="********" label="Password" />
-          <SubmitButton value="Sign in" />
+          <SubmitButton value="Send Link" />
 
           <div className="flex justify-between">
-            <CustomLink path="/auth/forget-password">
-              Forget password
-            </CustomLink>
+            <CustomLink path="/auth/signin">Sign in</CustomLink>
             <CustomLink path="/auth/signup">Sign up</CustomLink>
           </div>
         </form>
@@ -30,4 +27,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default ForgetPassword;
