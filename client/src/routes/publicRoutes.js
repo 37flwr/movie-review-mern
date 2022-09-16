@@ -1,9 +1,10 @@
-import ConfirmPassword from "../components/auth/ConfirmPassword";
 import EmailVerification from "../components/auth/EmailVerification";
 import ForgetPassword from "../components/auth/ForgetPassword";
-import SignInForm from "../components/auth/SignInForm";
-import SignUpForm from "../components/auth/SignUpForm";
+import ResetPassword from "../components/auth/ResetPassword";
+import SignInPage from "../components/auth/SignInPage";
+import SignUpPage from "../components/auth/SignUpPage";
 import Home from "../components/Home";
+import NotFound from "../components/NotFound";
 
 const publicRoutes = [
   {
@@ -12,11 +13,11 @@ const publicRoutes = [
   },
   {
     path: "/auth/signin",
-    component: <SignInForm />,
+    component: <SignInPage />,
   },
   {
     path: "/auth/signup",
-    component: <SignUpForm />,
+    component: <SignUpPage />,
   },
   {
     path: "/auth/verification",
@@ -27,8 +28,12 @@ const publicRoutes = [
     component: <ForgetPassword />,
   },
   {
-    path: "/auth/confirm-password",
-    component: <ConfirmPassword />,
+    path: "/auth/reset-password",
+    component: <ResetPassword />,
+  },
+  {
+    path: "*",
+    component: <NotFound />,
   },
 ];
 

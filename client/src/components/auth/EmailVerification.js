@@ -1,5 +1,8 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { verifyUserEmail } from "../../api/auth";
+import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import FormContainer from "../form/FormContainer";
@@ -9,11 +12,28 @@ import SubmitButton from "../form/SubmitButton";
 const OTP_LENGTH = 6;
 let currentOTPIndex;
 
+const isValidOTP = (otp) => {
+  let valid = false;
+
+  for (let val of otp) {
+    valid = !isNaN(parseInt(val));
+    if (!valid) break;
+  }
+  return valid;
+};
+
 const EmailVerification = () => {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
   const [activeOtpIdx, setActiveOtpIdx] = useState(0);
 
   const inputRef = useRef();
+  const { updateNotification } = useNotification();
+  const { isAuth, authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
+  const { state } = useLocation();
+  const user = state?.user;
+
+  const navigate = useNavigate();
 
   const focusNextInputField = (idx) => {
     setActiveOtpIdx(idx + 1);
@@ -44,14 +64,45 @@ const EmailVerification = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isValidOTP(otp)) return updateNotification("error", "Invalid OTP");
+
+    // Submit OTP
+    const {
+      error,
+      message,
+      user: userResponse,
+    } = await verifyUserEmail({
+      OTP: otp.join(""),
+      userId: user.id,
+    });
+
+    if (error) return updateNotification("error", error);
+    updateNotification("success", message);
+
+    localStorage.setItem("auth-token", userResponse.token);
+    isAuth();
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIdx]);
 
+  useEffect(() => {
+    if (!user) navigate("/not-found");
+    if (isLoggedIn) navigate("/");
+    //eslint-disable-next-line
+  }, [user, isLoggedIn]);
+
   return (
     <FormContainer>
       <Container>
-        <form className={classNames(commonModalClasses)}>
+        <form
+          onSubmit={handleSubmit}
+          className={classNames(commonModalClasses)}
+        >
           <div>
             <FormTitle>Please enter the OTP to verify your account</FormTitle>
             <p className="text-center dark:text-dark-subtle text-light-subtle">
@@ -71,7 +122,7 @@ const EmailVerification = () => {
               />
             ))}
           </div>
-          <SubmitButton value="Send Link" />
+          <SubmitButton value="Verify account" />
         </form>
       </Container>
     </FormContainer>

@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 const EmailVerificationToken = require("../models/emailVerificationToken");
 const PasswordResetToken = require("../models/passwordResetToken");
-
 const { isValidObjectId } = require("mongoose");
 const { generateOTP, generateMailTransporter } = require("../utils/mail");
 const {
@@ -44,9 +42,9 @@ exports.create = async (req, res) => {
     `,
   });
 
-  res
-    .status(201)
-    .send({ user: newUser._id, name: newUser.name, email: newUser.email });
+  res.status(201).send({
+    user: { id: newUser._id, name: newUser.name, email: newUser.email },
+  });
 };
 
 exports.verifyEmail = async (req, res) => {
@@ -96,7 +94,11 @@ exports.verifyEmail = async (req, res) => {
     `,
   });
 
-  sendSuccess(res, "Your email has been verified");
+  const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+  res.json({
+    user: { id: user._id, name: user.name, email: user.email, token: jwtToken },
+    message: "Your email has been verified",
+  });
 };
 
 exports.resendEmailVerificationToken = async (req, res) => {
@@ -162,7 +164,7 @@ exports.forgetPassword = async (req, res) => {
 
   await newPasswordResetToken.save();
 
-  const resetPasswordUrl = `http://localhost:3000/reset-password?token=${token}&id=${user._id}`;
+  const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
 
   // Send OTP to user
   var transport = generateMailTransporter();
@@ -177,7 +179,7 @@ exports.forgetPassword = async (req, res) => {
     `,
   });
 
-  sendSuccess(res, "Link sent to your email");
+  res.json({ message: "Link sent to your email" });
 };
 
 exports.sendResetPasswordTokenStatus = (req, res) => {

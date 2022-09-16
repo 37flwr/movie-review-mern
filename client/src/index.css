@@ -4,6 +4,33 @@
   -moz-appearance: textfield;
 }
 
+.bounce-custom {
+  animation: bounce-custom 2s ease;
+}
+@keyframes bounce-custom {
+  0% {
+    transform: translateY(0%);
+  }
+  10% {
+    transform: translateY(-15%);
+  }
+  20% {
+    transform: translateY(0%);
+  }
+  25% {
+    transform: translateY(-7%);
+  }
+  27% {
+    transform: translateY(0%);
+  }
+  29% {
+    transform: translateY(-3%);
+  }
+  30% {
+    transform: translateY(0);
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

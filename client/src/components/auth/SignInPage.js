@@ -1,6 +1,8 @@
-import axios from "axios";
 import classNames from "classnames";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth, useNotification } from "../../hooks";
+import { isValidEmail } from "../../utils/helper";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import CustomLink from "../CustomLink";
@@ -9,15 +11,9 @@ import FormInput from "../form/FormInput";
 import FormTitle from "../form/FormTitle";
 import SubmitButton from "../form/SubmitButton";
 
-const validateUserInfo = ({ name, email, password }) => {
-  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const isValidName = /^[a-z A-Z 0-9]+$/;
-
-  if (!name.trim()) return { ok: false, error: "Name is missing!" };
-  if (!isValidName.test(name)) return { ok: false, error: "Invalid name!" };
-
+const validateUserInfo = ({ email, password }) => {
   if (!email.trim()) return { ok: false, error: "Email is missing!" };
-  if (!isValidEmail.test(email)) return { ok: false, error: "Invalid email!" };
+  if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
 
   if (!password.trim()) return { ok: false, error: "Name is missing!" };
   if (password.length < 8)
@@ -26,28 +22,38 @@ const validateUserInfo = ({ name, email, password }) => {
   return { ok: true };
 };
 
-const SignUpForm = () => {
+const SignInPage = () => {
   const [userInfo, setUserInfo] = useState({
-    name: "",
     email: "",
     password: "",
   });
+  const { email, password } = userInfo;
 
-  const { name, email, password } = userInfo;
+  const navigate = useNavigate();
+
+  const { updateNotification } = useNotification();
+  const { handleLogin, authInfo } = useAuth();
+  const { isPending, isLoggedIn } = authInfo;
 
   const handleChange = ({ target }) => {
     setUserInfo({ ...userInfo, [target.name]: target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
 
-    if (!ok) return console.log(error);
+    if (!ok) return updateNotification("error", error);
 
-    //api/user/create
-    axios.post("/api/user/create", userInfo);
+    handleLogin(email, password);
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+    //eslint-disable-next-line
+  }, [isLoggedIn]);
 
   return (
     <FormContainer>
@@ -56,14 +62,7 @@ const SignUpForm = () => {
           onSubmit={handleSubmit}
           className={classNames(commonModalClasses, "w-72")}
         >
-          <FormTitle>Sign up</FormTitle>
-          <FormInput
-            value={name}
-            onChange={handleChange}
-            name="name"
-            placeholder="John Doe"
-            label="Name"
-          />
+          <FormTitle>Sign in</FormTitle>
           <FormInput
             value={email}
             onChange={handleChange}
@@ -79,13 +78,13 @@ const SignUpForm = () => {
             label="Password"
             type="password"
           />
-          <SubmitButton value="Sign up" />
+          <SubmitButton value="Sign in" busy={isPending} />
 
           <div className="flex justify-between">
             <CustomLink path="/auth/forget-password">
               Forget password
             </CustomLink>
-            <CustomLink path="/auth/signin">Sign in</CustomLink>
+            <CustomLink path="/auth/signup">Sign up</CustomLink>
           </div>
         </form>
       </Container>
@@ -93,4 +92,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignInPage;
