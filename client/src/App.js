@@ -1,16 +1,18 @@
-import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/user/Navbar";
-import { publicRoutes } from "./routes/publicRoutes";
+import { useAuth } from "./hooks";
+import AdminNavigator from "./navigator/AdminNavigator";
+import UserNavigator from "./navigator/UserNavigator";
 
 export default function App() {
+  const { authInfo } = useAuth();
+  const isAdmin = authInfo.profile?.role === "admin";
+
+  if (isAdmin) return <AdminNavigator />;
+
   return (
     <>
       <Navbar />
-      <Routes>
-        {publicRoutes.map(({ path, component: Component }) => (
-          <Route path={path} element={Component} />
-        ))}
-      </Routes>
+      <UserNavigator />
     </>
   );
 }

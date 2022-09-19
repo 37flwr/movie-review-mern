@@ -1,6 +1,5 @@
 import classNames from "classnames";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useAuth, useNotification } from "../../hooks";
 import { isValidEmail } from "../../utils/helper";
 import { commonModalClasses } from "../../utils/theme";
@@ -29,11 +28,9 @@ const SignInPage = () => {
   });
   const { email, password } = userInfo;
 
-  const navigate = useNavigate();
-
   const { updateNotification } = useNotification();
   const { handleLogin, authInfo } = useAuth();
-  const { isPending, isLoggedIn } = authInfo;
+  const { isPending } = authInfo;
 
   const handleChange = ({ target }) => {
     setUserInfo({ ...userInfo, [target.name]: target.value });
@@ -47,13 +44,6 @@ const SignInPage = () => {
 
     handleLogin(email, password);
   };
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/");
-    }
-    //eslint-disable-next-line
-  }, [isLoggedIn]);
 
   return (
     <FormContainer>
