@@ -6,10 +6,10 @@ import { isValidEmail } from "../../utils/helper";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import CustomLink from "../CustomLink";
-import FormContainer from "../form/FormContainer";
-import FormInput from "../form/FormInput";
-import FormTitle from "../form/FormTitle";
-import SubmitButton from "../form/SubmitButton";
+import FormContainer from "../form/formElements/FormContainer";
+import FormInput from "../form/formElements/FormInput";
+import FormTitle from "../form/formElements/FormTitle";
+import SubmitButton from "../form/formElements/SubmitButton";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");

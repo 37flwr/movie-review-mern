@@ -5,7 +5,7 @@ import { BiMoviePlay } from "react-icons/bi";
 import { FaUserNinja } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../hooks";
+import { useAuth } from "../../../hooks";
 
 const Navbar = () => {
   const { handleLogout } = useAuth();

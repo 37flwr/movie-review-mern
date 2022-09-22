@@ -1,6 +1,6 @@
-import Actors from "../admin/Actors";
-import Dashboard from "../admin/Dashboard";
-import Movies from "../admin/Movies";
+import Actors from "../components/admin/pages/Actors";
+import Dashboard from "../components/admin/pages/Dashboard";
+import Movies from "../components/admin/pages/Movies";
 import NotFound from "../components/NotFound";
 
 export const adminRoutes = [

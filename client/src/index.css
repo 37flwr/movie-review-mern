@@ -7,6 +7,7 @@
 .bounce-custom {
   animation: bounce-custom 2s ease;
 }
+
 @keyframes bounce-custom {
   0% {
     transform: translateY(0%);
@@ -29,6 +30,45 @@
   30% {
     transform: translateY(0);
   }
+}
+
+@keyframes scale {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-scale {
+  transform-origin: 0% 0%;
+  animation: scale 0.2s ease;
+}
+
+.animate-scale-reverse {
+  transform-origin: 0% 0%;
+  animation: scale 0.2s reverse forwards;
+}
+
+.custom-scroll-bar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* Track */
+.custom-scroll-bar::-webkit-scrollbar-track {
+  background: #222;
+}
+
+/* Handle */
+.custom-scroll-bar::-webkit-scrollbar-thumb {
+  background: rgb(243, 194, 129);
+}
+
+/* Handle on hover */
+.custom-scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: rgb(233, 205, 168);
 }
 
 @tailwind base;

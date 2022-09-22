@@ -6,10 +6,10 @@ import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
 import { useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
-import FormContainer from "../form/FormContainer";
-import FormInput from "../form/FormInput";
-import FormTitle from "../form/FormTitle";
-import SubmitButton from "../form/SubmitButton";
+import FormContainer from "../form/formElements/FormContainer";
+import FormInput from "../form/formElements/FormInput";
+import FormTitle from "../form/formElements/FormTitle";
+import SubmitButton from "../form/formElements/SubmitButton";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState({
@@ -51,7 +51,6 @@ const ResetPassword = () => {
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
-    console.log(name, value);
     setPassword({ ...password, [name]: value });
   };
 

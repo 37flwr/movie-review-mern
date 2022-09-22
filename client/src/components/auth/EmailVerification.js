@@ -5,9 +5,9 @@ import { resendEmailVerificationToken, verifyUserEmail } from "../../api/auth";
 import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
-import FormContainer from "../form/FormContainer";
-import FormTitle from "../form/FormTitle";
-import SubmitButton from "../form/SubmitButton";
+import FormContainer from "../form/formElements/FormContainer";
+import FormTitle from "../form/formElements/FormTitle";
+import SubmitButton from "../form/formElements/SubmitButton";
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
