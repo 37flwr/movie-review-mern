@@ -5,8 +5,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import App from "./App";
-import ErrorFallback from "./components/ErrorFallback";
-import Loading from "./components/Loading";
+import ErrorFallback from "./components/fallback/ErrorFallback";
+import Loading from "./components/fallback/Loading";
 import ContextProviders from "./context";
 
 import { fetcher } from "./utils/fetcher";

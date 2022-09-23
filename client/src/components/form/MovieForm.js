@@ -1,6 +1,5 @@
 import classNames from "classnames";
-import React, { startTransition, useState } from "react";
-import { searchActor } from "../../api/actor";
+import React, { useState } from "react";
 import { useNotification } from "../../hooks";
 import CastModal from "../../modals/CastModal";
 import GenresModal from "../../modals/GenresModal";
@@ -9,9 +8,10 @@ import { createUrlForUI } from "../../utils/helper";
 import {
   languageOptions,
   statusOptions,
-  typeOptions,
+  typeOptions
 } from "../../utils/options";
 import { commonFormInputClasses } from "../../utils/theme";
+import { validateMovie } from "../../utils/validator";
 import CastForm from "./CastForm";
 import GenresSelector from "./formElements/GenresSelector";
 import LiveSearch from "./formElements/LiveSearch";
@@ -20,74 +20,12 @@ import Selector from "./formElements/Selector";
 import SubmitButton from "./formElements/SubmitButton";
 import TagsInput from "./formElements/TagsInput";
 
-const MovieForm = ({ values, handleChange, onClose }) => {
+const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
   const [showModal, setShowModal] = useState(true);
   const [modalType, setModalType] = useState(null);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState(null);
 
-  const [directorRes, setDirectorRes] = useState([]);
-
   const { updateNotification } = useNotification();
-
-  // Update values
-  const handleValueChange = (id, value) => {
-    handleChange((currState) => ({ ...currState, [id]: value }));
-  };
-  const handleFileUpdate = (id, value) => {
-    if (value.target.files[0]) {
-      setSelectedPosterForUI(createUrlForUI(value.target.files[0]));
-      return handleChange((currState) => ({
-        ...currState,
-        [id]: value.target.files[0],
-      }));
-    }
-    return updateNotification("error", "File is missing");
-  };
-  const handleArrayUpdate = (data, key) => {
-    if (data) {
-      if (values[key].filter((value) => value.id === data.id).length === 0) {
-        handleChange((currState) => ({
-          ...currState,
-          [key]: [...currState[key], data],
-        }));
-      } else updateNotification("warning", "Already in list");
-    }
-  };
-  const handleArrayUpdateWithProfile = (data, key) => {
-    if (data) {
-      if (
-        values[key].filter((value) => value.profile.id === data.profile.id)
-          .length === 0
-      ) {
-        handleChange((currState) => ({
-          ...currState,
-          [key]: [...currState[key], data],
-        }));
-      } else updateNotification("warning", "Already in list");
-    }
-  };
-  const handleArrayUpdateWithoutId = (data, key) => {
-    if (data) {
-      if (values[key].filter((value) => value === data).length === 0) {
-        handleChange((currState) => ({
-          ...currState,
-          [key]: [...currState[key], data],
-        }));
-      } else updateNotification("warning", "Already in list");
-    }
-  };
-  const handleArrayDelete = (idx, key) => {
-    handleChange((currState) => ({
-      ...currState,
-      [key]: currState[key].filter((_, i) => i !== idx),
-    }));
-  };
-  const handleDirectorUpdate = (values, key) => {
-    handleChange((currState) => ({
-      ...currState,
-      [key]: { ...values },
-    }));
-  };
 
   // Inputs object
   const leftSideInputs = [
@@ -195,9 +133,6 @@ const MovieForm = ({ values, handleChange, onClose }) => {
               withValue
               id={this.id}
               value={values.director?.name}
-              // updateResults={
-              // }
-              results={directorRes}
               handleUpdate={handleDirectorUpdate}
             />
           </>
@@ -331,13 +266,76 @@ const MovieForm = ({ values, handleChange, onClose }) => {
     },
   ];
 
+  // Update values handlers
+  const handleValueChange = (id, value) => {
+    handleChange((currState) => ({ ...currState, [id]: value }));
+  };
+  const handleFileUpdate = (id, value) => {
+    if (value.target.files[0]) {
+      setSelectedPosterForUI(createUrlForUI(value.target.files[0]));
+      return handleChange((currState) => ({
+        ...currState,
+        [id]: value.target.files[0],
+      }));
+    }
+    return updateNotification("error", "File is missing");
+  };
+  const handleArrayUpdate = (data, key) => {
+    if (data) {
+      if (values[key].filter((value) => value.id === data.id).length === 0) {
+        handleChange((currState) => ({
+          ...currState,
+          [key]: [...currState[key], data],
+        }));
+      } else updateNotification("warning", "Already in list");
+    }
+  };
+  const handleArrayUpdateWithProfile = (data, key) => {
+    if (data) {
+      if (
+        values[key].filter((value) => value.profile.id === data.profile.id)
+          .length === 0
+      ) {
+        handleChange((currState) => ({
+          ...currState,
+          [key]: [...currState[key], data],
+        }));
+      } else updateNotification("warning", "Already in list");
+    }
+  };
+  const handleArrayUpdateWithoutId = (data, key) => {
+    if (data) {
+      if (values[key].filter((value) => value === data).length === 0) {
+        handleChange((currState) => ({
+          ...currState,
+          [key]: [...currState[key], data],
+        }));
+      } else updateNotification("warning", "Already in list");
+    }
+  };
+  const handleArrayDelete = (idx, key) => {
+    handleChange((currState) => ({
+      ...currState,
+      [key]: currState[key].filter((_, i) => i !== idx),
+    }));
+  };
+  const handleDirectorUpdate = (values, key) => {
+    handleChange((currState) => ({
+      ...currState,
+      [key]: { ...values },
+    }));
+  };
+
   // Handlers
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(values);
-    updateNotification("success", "Movie successfully added");
-    onClose();
+    const { error } = validateMovie(values);
+    if (error) return updateNotification("error", error);
+
+    onSubmit(values);
   };
+
+  // Modal handlers
   const handleHideModal = () => {
     setShowModal(false);
   };
@@ -392,6 +390,7 @@ const MovieForm = ({ values, handleChange, onClose }) => {
           <SubmitButton
             value="Upload"
             type="button"
+            busy={busy}
             onClick={(e) => handleSubmit(e)}
           />
         </div>

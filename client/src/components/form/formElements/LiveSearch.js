@@ -87,7 +87,6 @@ const LiveSearch = ({ handleUpdate, id, value }) => {
   };
 
   const handleChange = async (e) => {
-    console.log(e.target.value);
     setDefaultValue(e.target.value);
   };
 

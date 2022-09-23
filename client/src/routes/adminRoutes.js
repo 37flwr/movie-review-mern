@@ -1,7 +1,7 @@
 import Actors from "../components/admin/pages/Actors";
 import Dashboard from "../components/admin/pages/Dashboard";
 import Movies from "../components/admin/pages/Movies";
-import NotFound from "../components/NotFound";
+import NotFound from "../components/fallback/NotFound";
 
 export const adminRoutes = [
   {

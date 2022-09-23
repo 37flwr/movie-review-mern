@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import ActorUpload from "../components/admin/ActorUpload";
-import MovieUpload from "../components/admin/MovieUpload";
+import ActorUpload from "../components/admin/modals/ActorUpload";
+import MovieUpload from "../components/admin/modals/MovieUpload";
 import Header from "../components/admin/navigation/Header";
 import Navbar from "../components/admin/navigation/Navbar";
 import { adminRoutes } from "../routes/adminRoutes";

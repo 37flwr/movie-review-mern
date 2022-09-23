@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { useAuth, useNotification } from "../../hooks";
-import { isValidEmail } from "../../utils/helper";
 import { commonModalClasses } from "../../utils/theme";
+import { isValidEmail } from "../../utils/validator";
 import Container from "../Container";
 import CustomLink from "../CustomLink";
 import FormContainer from "../form/formElements/FormContainer";
