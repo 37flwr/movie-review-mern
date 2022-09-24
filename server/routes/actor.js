@@ -6,6 +6,7 @@ const {
   findActor,
   getLatestActors,
   getSingleActor,
+  getActors,
 } = require("../controllers/actor");
 const { isAdmin, isAuth } = require("../middlewares/auth");
 const { uploadImage } = require("../middlewares/multer");
@@ -34,6 +35,7 @@ router.post(
 router.delete("/:id", isAuth, isAdmin, removeActor);
 router.get("/search", findActor);
 router.get("/latest-uploads", getLatestActors);
+router.get("/actors", isAuth, isAdmin, getActors);
 router.get("/single/:id", getSingleActor);
 
 module.exports = router;

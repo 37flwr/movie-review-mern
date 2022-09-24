@@ -7,6 +7,13 @@ const ActorProfile = ({ profile }) => {
   if (!profile) return null;
   const { name, about = "", avatar } = profile;
 
+  const formatName = (name) => {
+    const ACCEPTED_NAME_LENGTH = 15;
+    if (name.length <= ACCEPTED_NAME_LENGTH) return name;
+
+    return name.substring(0, ACCEPTED_NAME_LENGTH) + "..";
+  };
+
   return (
     <div className="dark:bg-secondary bg-white shadow h-20 rounded overflow-hidden">
       <div
@@ -20,8 +27,8 @@ const ActorProfile = ({ profile }) => {
           className="w-20 aspect-square object-cover"
         />
         <div className="flex flex-col px-2">
-          <h1 className="text-xl text-primary dark:text-white font-semibold">
-            {name}
+          <h1 className="text-xl text-primary dark:text-white font-semibold whitespace-nowrap">
+            {formatName(name)}
           </h1>
           <p className="text-primary dark:text-white">
             {about.substring(0, 50)}

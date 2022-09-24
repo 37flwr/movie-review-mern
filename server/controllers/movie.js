@@ -255,7 +255,6 @@ exports.removeMovie = async (req, res) => {
   }
 
   // Removing trailer
-  console.log(movie);
   const trailerId = movie.trailer.public_id;
   if (!trailerId)
     return sendError(res, "Something went wrong. Could not find trailer");

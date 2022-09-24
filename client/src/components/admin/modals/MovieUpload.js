@@ -11,7 +11,6 @@ const movieInfoToFormData = (values) => {
 
   const formData = new FormData();
   const finalMovieInfo = { ...values };
-  console.log(finalMovieInfo);
 
   finalMovieInfo.tags = JSON.stringify(tags);
   finalMovieInfo.genres = JSON.stringify(genres);
@@ -91,7 +90,6 @@ const MovieUpload = ({ onClose }) => {
     const modifiedData = movieInfoToFormData(movieInfo);
     const res = await uploadMovie(modifiedData);
     setBusy(false);
-    console.log(res);
 
     updateNotification("success", "Movie successfully added");
     onClose();
