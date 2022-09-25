@@ -31,7 +31,7 @@ const Navbar = () => {
             </NavItem>
           </li>
           <li>
-            <NavItem to="/actors">
+            <NavItem to="/actors?page=1">
               <FaUserNinja />
               <span>Actors</span>
             </NavItem>

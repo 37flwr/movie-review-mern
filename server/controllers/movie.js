@@ -134,18 +134,18 @@ exports.updateMovieWithPoster = async (req, res) => {
   movie.trailer = trailer;
   movie.language = language;
 
-  //   if (director) {
-  //     if (!isValidObjectId(director))
-  //       return sendError(res, "Invalid director id");
-  //     movie.director = director;
-  //   }
-  //   if (writers) {
-  //     for (let writerId of writers) {
-  //       if (!isValidObjectId(writerId))
-  //         return sendError(res, "Invalid writer id");
-  //     }
-  //     movie.writers = writers;
-  //   }
+    if (director) {
+      if (!isValidObjectId(director))
+        return sendError(res, "Invalid director id");
+      movie.director = director;
+    }
+    if (writers) {
+      for (let writerId of writers) {
+        if (!isValidObjectId(writerId))
+          return sendError(res, "Invalid writer id");
+      }
+      movie.writers = writers;
+    }
 
   // Update poster
   // Removing poster from cloud is there is any
@@ -268,3 +268,25 @@ exports.removeMovie = async (req, res) => {
   await Movie.findByIdAndDelete(movieId);
   res.json({ message: "Movie removed successfully" });
 };
+
+exports.getMovies = async (req, res) => {
+  const {pageNumber = 1, limit = 10} = req.query
+  
+  const movies = await Movie.find({})
+  .sort({createdAt: -1})
+  .skip((parseInt(pageNumber) - 1) * parseInt(limit))
+  .limit(parseInt(limit));
+
+
+  if (!movies) return sendError(res, "No movies found", 404);
+
+  const formattedMovies = movies.map((movie) => ({
+    id: movie._id,
+    title: movie.title,
+    poster: movie.poster?.url,
+    genres: movie.genres,
+    status: movie.status
+  }));
+
+  res.json({ movies: formattedMovies });
+}
