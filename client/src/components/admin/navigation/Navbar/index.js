@@ -1,11 +1,11 @@
-import classNames from "classnames";
 import React from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { BiMoviePlay } from "react-icons/bi";
 import { FaUserNinja } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../../../hooks";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../../hooks";
+import NavItem from "./NavItem";
 
 const Navbar = () => {
   const { handleLogout } = useAuth();
@@ -25,7 +25,7 @@ const Navbar = () => {
             </NavItem>
           </li>
           <li>
-            <NavItem to="/movies">
+            <NavItem to="/movies?page=1">
               <BiMoviePlay />
               <span>Movies</span>
             </NavItem>
@@ -49,22 +49,6 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
-
-const NavItem = ({ children, to }) => {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        classNames(
-          isActive ? "text-white font-semibold" : "text-gray-400",
-          "flex items-center text-lg space-x-2 p-2 hover:opacity-80"
-        )
-      }
-    >
-      {children}
-    </NavLink>
   );
 };
 

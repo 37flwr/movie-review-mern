@@ -24,11 +24,15 @@ const validateActor = ({ name, about, gender, avatar }) => {
   return { error: null };
 };
 
-const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
-  const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
-  const { name, about, gender } = actorInfo;
-  const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
+const ActorForm = ({ title, btnTitle, busy, onSubmit, initialValues }) => {
+  const [actorInfo, setActorInfo] = useState(
+    initialValues ? { ...initialValues, avatar: null } : { ...defaultActorInfo }
+  );
+  const [selectedAvatarForUI, setSelectedAvatarForUI] = useState(
+    initialValues ? initialValues.avatar : ""
+  );
 
+  const { name, about, gender } = actorInfo;
   const { updateNotification } = useNotification();
 
   const handleInputChange = ({ target }) => {

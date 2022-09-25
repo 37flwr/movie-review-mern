@@ -10,3 +10,7 @@ export const catchError = (error) => {
 export const createUrlForUI = (file) => {
   return URL.createObjectURL(file);
 };
+
+export const getCurrentPage = () => {
+  return parseInt(new URL(document.location).searchParams.get("page"));
+};
