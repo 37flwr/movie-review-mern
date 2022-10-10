@@ -87,36 +87,36 @@ exports.validateMovie = [
 
       return true;
     }),
-  check("trailer")
-    .isObject()
-    .withMessage("Trailer info must be an object with url and public_id")
-    .custom(({ url, public_id }) => {
-      try {
-        const result = new URL(url);
-        if (!result.protocol.includes("http"))
-          throw Error("Trailer url is invalid");
-
-        const arr = url.split("/");
-        const publicId = arr[arr.length - 1].split(".")[0];
-
-        if (publicId !== public_id) throw Error("Trailer public id is invalid");
-
-        return true;
-      } catch (err) {
-        throw Error("Trailer url is invalid");
-      }
-    }),
   check("poster").custom((_, { req }) => {
     if (!req.file) throw Error("Poster file is missing");
     return true;
   }),
 ];
 
-exports.validate = (req, res, next) => {
-  const error = validationResult(req).array();
-  if (error.length > 0) {
-    return res.json({ error: error[0].msg });
-  }
+(exports.validateTrailer = check("trailer")
+  .isObject()
+  .withMessage("Trailer info must be an object with url and public_id")
+  .custom(({ url, public_id }) => {
+    try {
+      const result = new URL(url);
+      if (!result.protocol.includes("http"))
+        throw Error("Trailer url is invalid");
 
-  next();
-};
+      const arr = url.split("/");
+      const publicId = arr[arr.length - 1].split(".")[0];
+
+      if (publicId !== public_id) throw Error("Trailer public id is invalid");
+
+      return true;
+    } catch (err) {
+      throw Error("Trailer url is invalid");
+    }
+  })),
+  (exports.validate = (req, res, next) => {
+    const error = validationResult(req).array();
+    if (error.length > 0) {
+      return res.json({ error: error[0].msg });
+    }
+
+    next();
+  });

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNotification } from "../../hooks";
 import CastModal from "../../modals/CastModal";
 import GenresModal from "../../modals/GenresModal";
@@ -8,7 +8,7 @@ import { createUrlForUI } from "../../utils/helper";
 import {
   languageOptions,
   statusOptions,
-  typeOptions
+  typeOptions,
 } from "../../utils/options";
 import { commonFormInputClasses } from "../../utils/theme";
 import { validateMovie } from "../../utils/validator";
@@ -20,7 +20,31 @@ import Selector from "./formElements/Selector";
 import SubmitButton from "./formElements/SubmitButton";
 import TagsInput from "./formElements/TagsInput";
 
-const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
+const MovieForm = ({
+  values = {
+    title: "",
+    storyLine: "",
+    tags: [],
+    cast: [],
+    director: {},
+    writers: [],
+    releaseDate: "",
+    poster: null,
+    genres: [],
+    type: "",
+    language: "",
+    status: "",
+    trailer: {
+      url: "",
+      public_id: "",
+    },
+  },
+  handleChange,
+  busy,
+  btnTitle,
+  onClose,
+  onSubmit,
+}) => {
   const [showModal, setShowModal] = useState(true);
   const [modalType, setModalType] = useState(null);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState(null);
@@ -40,7 +64,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
               id={this.id}
               type="text"
               placeholder="Titanic"
-              value={values.id}
+              value={values.title}
               onChange={({ target }) => {
                 handleValueChange(this.id, target.value);
               }}
@@ -63,7 +87,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
             <textarea
               id={this.id}
               placeholder="Movie story line..."
-              value={values.id}
+              value={values.storyLine}
               onChange={({ target }) => {
                 handleValueChange(this.id, target.value);
               }}
@@ -96,7 +120,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
     {
       title: "Cast",
       id: "cast",
-      badge: values.cast.length,
+      badge: values?.cast?.length,
       get input() {
         return (
           <>
@@ -132,7 +156,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
             <LiveSearch
               withValue
               id={this.id}
-              value={values.director?.name}
+              value={values?.director?.name}
               handleUpdate={handleDirectorUpdate}
             />
           </>
@@ -142,7 +166,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
     {
       title: "Writers",
       id: "writers",
-      badge: values.writers.length,
+      badge: values?.writers?.length,
       get input() {
         return (
           <>
@@ -174,7 +198,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
             <input
               id={this.id}
               type="date"
-              value={values.releaseDate}
+              value={values.releaseDate?.slice(0, 10)}
               onChange={({ target }) => {
                 handleValueChange(this.id, target.value);
               }}
@@ -329,9 +353,12 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
   // Handlers
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(1);
     const { error } = validateMovie(values);
+    console.log(error);
     if (error) return updateNotification("error", error);
 
+    console.log(2);
     onSubmit(values);
   };
 
@@ -380,6 +407,10 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
     }
   };
 
+  useEffect(() => {
+    if (values?.poster) setSelectedPosterForUI(values?.poster);
+  }, [values]);
+
   return (
     <>
       <form className="flex space-x-3 p-3">
@@ -388,7 +419,7 @@ const MovieForm = ({ values, handleChange, busy, onClose, onSubmit }) => {
             <div className="flex flex-col">{input}</div>
           ))}
           <SubmitButton
-            value="Upload"
+            value={btnTitle || "Upload"}
             type="button"
             busy={busy}
             onClick={(e) => handleSubmit(e)}

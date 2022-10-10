@@ -34,3 +34,32 @@ export const uploadMovie = async (formData) => {
     return catchError(err);
   }
 };
+
+export const getMovieForUpdate = async (movieId) => {
+  const token = getToken();
+  try {
+    const { data } = await client.get(`/movie/for-update/${movieId}`, {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    return data;
+  } catch (err) {
+    return catchError(err);
+  }
+};
+
+export const updateMovie = async (movieId, formData) => {
+  const token = getToken();
+  try {
+    const { data } = await client.patch(`/movie/update/${movieId}`, formData, {
+      headers: {
+        authorization: "Bearer " + token,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (err) {
+    return catchError(err);
+  }
+};
