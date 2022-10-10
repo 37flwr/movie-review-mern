@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Options from "./Options";
 
-const ActorProfile = ({ actor, onEdit }) => {
+const ActorProfile = ({ actor, onEdit, onDelete }) => {
   const [showOptions, setShowOptions] = useState(false);
 
   if (!actor) return null;
@@ -34,9 +34,7 @@ const ActorProfile = ({ actor, onEdit }) => {
             {about.substring(0, 50)}
           </p>
         </div>
-        {showOptions && (
-          <Options onDelete={() => console.log("delete")} onEdit={onEdit} />
-        )}
+        {showOptions && <Options onDelete={onDelete} onEdit={onEdit} />}
       </div>
     </div>
   );
